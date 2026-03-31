@@ -1,0 +1,1 @@
+Logrotate access model test: PASS

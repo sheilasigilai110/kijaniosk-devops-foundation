@@ -1,0 +1,61 @@
+2026-03-31 11:56:23 - Starting KijaniKiosk provisioning...
+2026-03-31 11:56:23 - Phase 1: Package Management
+Hit:1 http://security.ubuntu.com/ubuntu noble-security InRelease
+Hit:2 http://archive.ubuntu.com/ubuntu noble InRelease
+Hit:3 http://archive.ubuntu.com/ubuntu noble-updates InRelease
+Hit:4 http://archive.ubuntu.com/ubuntu noble-backports InRelease
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+acl is already the newest version (2.3.2-1build1.1).
+ufw is already the newest version (0.36.2-6).
+The following packages were automatically installed and are no longer required:
+  libgl1-amber-dri libglapi-mesa libllvm19
+Use 'sudo apt autoremove' to remove them.
+0 upgraded, 0 newly installed, 0 to remove and 48 not upgraded.
+[PASS] Packages installed
+2026-03-31 11:56:26 - Phase 2: Users & Groups
+2026-03-31 11:56:26 - User exists: kk-api
+2026-03-31 11:56:26 - User exists: kk-payments
+2026-03-31 11:56:26 - User exists: kk-logs
+2026-03-31 11:56:26 - Group exists: kijanikiosk
+[PASS] Users and groups configured
+2026-03-31 11:56:26 - Phase 3: Directory Structure & Permissions
+[PASS] Directories and ACLs configured
+2026-03-31 11:56:26 - Phase 4: Configuration Files (TODO)
+2026-03-31 11:56:26 - Phase 4: Configuration Files
+[PASS] Configuration files created
+2026-03-31 11:56:26 - Phase 5: Firewall (TODO)
+2026-03-31 11:56:26 - Phase 5: Firewall
+Backing up 'user.rules' to '/etc/ufw/user.rules.20260331_115627'
+Backing up 'before.rules' to '/etc/ufw/before.rules.20260331_115627'
+Backing up 'after.rules' to '/etc/ufw/after.rules.20260331_115627'
+Backing up 'user6.rules' to '/etc/ufw/user6.rules.20260331_115627'
+Backing up 'before6.rules' to '/etc/ufw/before6.rules.20260331_115627'
+Backing up 'after6.rules' to '/etc/ufw/after6.rules.20260331_115627'
+
+Default incoming policy changed to 'deny'
+(be sure to update your rules accordingly)
+Default outgoing policy changed to 'allow'
+(be sure to update your rules accordingly)
+Rules updated
+Rules updated (v6)
+Rules updated
+Rules updated (v6)
+Rules updated
+Rules updated
+Rules updated
+Rules updated (v6)
+Firewall is active and enabled on system startup
+[PASS] Firewall configured
+2026-03-31 11:56:29 - Phase 6: systemd Units (TODO)
+2026-03-31 11:56:29 - Phase 6: systemd Units
+[PASS] systemd services configured
+2026-03-31 11:56:31 - Phase 7: Logging (TODO)
+2026-03-31 11:56:31 - Phase 7: Logging & Logrotate
+[PASS] Logrotate config validated
+[PASS] Logging and logrotate configured
+2026-03-31 11:56:31 - Phase 8: Monitoring (TODO)
+2026-03-31 11:56:31 - Phase 8: Monitoring
+[PASS] Health check JSON created
