@@ -1,0 +1,19 @@
+app_base_dir: /opt/kijanikiosk
+
+users:
+  - kk-api
+  - kk-payments
+  - kk-logs
+
+group_name: kijanikiosk
+
+ports:
+  api: 3000
+  payments: 3001
+
+ssh_port: 22
+http_port: 80
+
+env_files:
+  api: "{{ app_base_dir }}/config/api.env"
+  payments: "{{ app_base_dir }}/config/payments-api.env"

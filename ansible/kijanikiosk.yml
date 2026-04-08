@@ -1,0 +1,105 @@
+---
+- name: KijaniKiosk Infrastructure Provisioning
+  hosts: kijanikiosk
+  become: yes
+  tasks:
+    # PHASE 1: Packages
+    - name: Ensure required packages are installed
+      apt:
+        name:
+          - curl
+          - git
+          - ufw
+          - logrotate
+        state: present
+        update_cache: yes
+
+    # PHASE 2: Service Accounts
+    - name: Create the system user for KijaniKiosk services
+      user:
+        name: "{{ system_user }}"
+        shell: /bin/false
+        system: yes
+        create_home: no
+        state: present
+
+    # PHASE 3: Directory Structure
+    - name: Create application directory structure
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ system_user }}"
+        group: "{{ system_user }}"
+        mode: '0755'
+      loop:
+        - "{{ app_dir }}"
+        - "{{ app_dir }}/bin"
+        - "{{ app_dir }}/config"
+        - "{{ app_dir }}/logs"
+# PHASE 4: Systemd Unit Files (Hardened via Template)
+    - name: Deploy hardened systemd unit files
+      template:
+        src: templates/kk-service.service.j2
+        dest: "/etc/systemd/system/{{ service_name }}.service"
+        mode: '0644'
+      notify: 
+        - Reload systemd
+        - Restart service
+
+    # PHASE 5: Environment Files
+    - name: Ensure environment file exists in config directory
+      template:
+        src: templates/env_file.j2
+        dest: "{{ app_dir }}/config/{{ env_file_name }}"
+        owner: "{{ system_user }}"
+        group: "{{ system_user }}"
+        mode: '0600'
+
+    # PHASE 6: Firewall (UFW)
+    - name: Allow SSH traffic
+      ufw:
+        rule: allow
+        port: '22'
+        proto: tcp
+
+    - name: Enable UFW firewall and deny everything else
+      ufw:
+        state: enabled
+        policy: deny
+
+    # PHASE 7: Logging & Journaling
+    - name: Ensure systemd journal directory exists for persistence
+      file:
+        path: /var/log/journal
+        state: directory
+        mode: '0755'
+      notify: Restart journald
+
+    - name: Deploy logrotate configuration
+      template:
+        src: templates/logrotate.j2
+        dest: /etc/logrotate.d/kijanikiosk
+        mode: '0644'
+
+    # PHASE 8: Health Check
+    - name: Create basic health check file
+      copy:
+        content: "OK - {{ ansible_hostname }} is healthy"
+        dest: "{{ app_dir }}/bin/health_check.sh"
+        mode: '0755'
+
+  # THE HANDLERS (Required for Requirement 2)
+  handlers:
+    - name: Reload systemd
+      systemd:
+        daemon_reload: yes
+
+    - name: Restart journald
+      service:
+        name: systemd-journald
+        state: restarted
+
+    - name: Restart service
+      systemd:
+        name: "{{ service_name }}"
+        state: restarted

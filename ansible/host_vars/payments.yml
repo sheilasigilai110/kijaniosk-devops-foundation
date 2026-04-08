@@ -1,0 +1,5 @@
+---
+service_name: kk-payments
+env_file_name: payments-api.env
+security_score_target: 2.5
+

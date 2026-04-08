@@ -1,0 +1,21 @@
+[Unit]
+Description=KijaniKiosk {{ service_name }} Service
+After=network.target
+
+[Service]
+User={{ system_user }}
+Group={{ system_user }}
+ExecStart=/usr/bin/sleep infinity
+Restart=always
+
+# Hardening for Requirement 5
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+NoNewPrivileges=yes
+ReadOnlyPaths=/
+ReadWritePaths={{ app_dir }}/logs {{ app_dir }}/config
+EnvironmentFile={{ app_dir }}/config/{{ env_file_name }}
+
+[Install]
+WantedBy=multi-user.target
