@@ -57,7 +57,8 @@ pipeline {
         }
 	stage('Prepare') {
 	    steps {
-              sh '''
+                sh '''
+		apk add --no-cache git
 		git config --global --add safe.directory $(pwd)
 		'''	
         }
