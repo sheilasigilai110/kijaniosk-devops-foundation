@@ -88,21 +88,31 @@ stage('Version') {
             }
         }
 
-        stage('Publish') {
-            steps {
-                withCredentials([string(credentialsId: 'nexus-token', variable: 'NPM_TOKEN')]) {
-                    dir('week5/friday/app') {
-                        sh """
-                            echo "//${NEXUS_URL.replace('http://','')}/repository/${NEXUS_REPO}/:_authToken=${NPM_TOKEN}" > .npmrc
-                            npm publish --registry=${NEXUS_URL}/repository/${NEXUS_REPO}
-                            rm -f .npmrc
-                        """
-                    }
-                }
+stage('Publish') {
+    steps {
+        withCredentials([usernamePassword(
+            credentialsId: 'nexus-creds',
+            usernameVariable: 'NEXUS_USER',
+            passwordVariable: 'NEXUS_PASS'
+        )]) {
+            dir('week5/friday/app') {
+                sh '''
+                    # Create .npmrc with Nexus authentication
+                    echo "//172.17.0.1:8081/repository/npm-hosted/:username=${NEXUS_USER}" > .npmrc
+                    echo "//172.17.0.1:8081/repository/npm-hosted/:_password=$(echo -n ${NEXUS_PASS} | base64)" >> .npmrc
+                    echo "//172.17.0.1:8081/repository/npm-hosted/:email=ci@example.com" >> .npmrc
+                    echo "//172.17.0.1:8081/repository/npm-hosted/:always-auth=true" >> .npmrc
+
+                    # Publish package
+                    npm publish --registry=http://172.17.0.1:8081/repository/npm-hosted
+
+                    # Clean up
+                    rm -f .npmrc
+                '''
             }
         }
     }
-
+}
     post {
         always {
             cleanWs()
