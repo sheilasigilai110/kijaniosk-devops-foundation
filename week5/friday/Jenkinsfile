@@ -18,7 +18,7 @@ pipeline {
             steps {
                 dir('week5/friday/app') {
                     
-                    sh 'exit 1'
+                    sh 'npm run lint'
                 }
             }
         }
