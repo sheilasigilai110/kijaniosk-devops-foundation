@@ -5,7 +5,9 @@ pipeline {
             args '-v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
-
+    tools{
+         dockerTool 'Docker' 
+    }
     environment {
         APP_NAME    = "kijanikiosk-payments"
         NEXUS_URL   = "http://:172.17.0.1:8081"
