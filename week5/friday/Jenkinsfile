@@ -51,7 +51,7 @@ pipeline {
             steps {
                 sh '''
                     apk add --no-cache git
-                    git config --global --add safe.directory $(pwd)
+                    git config --global --add safe.directory /var/jenkins_home/workspace
                 '''
             }
         }
@@ -101,7 +101,7 @@ pipeline {
 
                             REGISTRY="http://172.17.0.1:8081/repository/npm-hosted/"
 
-                            AUTH=$(echo -n "$NEXUS_USER:$NEXUS_PASS" | base64)
+                           
 
                             echo "registry=$REGISTRY" > .npmrc
                             echo "_auth=$AUTH" >> .npmrc
