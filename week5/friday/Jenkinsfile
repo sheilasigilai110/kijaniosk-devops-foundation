@@ -10,7 +10,6 @@ pipeline {
         APP_NAME   = "kijanikiosk-payments"
         NEXUS_URL  = "http://172.17.0.1:8081"
         NEXUS_REPO = "npm-hosted"
-        
     }
 
     stages {
@@ -56,29 +55,30 @@ pipeline {
                 '''
             }
         }
-stage('Version') {
-    steps {
-        script {
-            def gitSha = sh(
-                script: "git rev-parse --short HEAD",
-                returnStdout: true
-            ).trim()
 
-            echo "DEBUG: gitSha = '${gitSha}'"
+        stage('Version') {
+            steps {
+                script {
+                    def gitSha = sh(
+                        script: "git rev-parse --short HEAD",
+                        returnStdout: true
+                    ).trim()
 
-            if (!gitSha) {
-                error "gitSha is empty! Git command failed."
+                    echo "DEBUG: gitSha = '${gitSha}'"
+
+                    if (!gitSha) {
+                        error "gitSha is empty! Git command failed."
+                    }
+
+                    env.VERSION = "1.0.0-${gitSha}"
+                    echo "Version set to ${env.VERSION}"
+                }
+
+                dir('week5/friday/app') {
+                    sh "npm version ${env.VERSION} --no-git-tag-version --allow-same-version"
+                }
             }
-
-            env.VERSION = "1.0.0-${gitSha}"
-            echo "Version set to ${env.VERSION}"
         }
-
-        dir('week5/friday/app') {
-            sh "npm version ${env.VERSION} --no-git-tag-version --allow-same-version"
-        }
-    }
-}
 
         stage('Archive') {
             steps {
@@ -88,36 +88,36 @@ stage('Version') {
             }
         }
 
-stage('Publish') {
-    steps {
-        withCredentials([usernamePassword(
-            credentialsId: 'nexus-creds',
-            usernameVariable: 'NEXUS_USER',
-            passwordVariable: 'NEXUS_PASS'
-        )]) {
-            dir('week5/friday/app') {
-                sh '''
-		   set -e
-		   REGISTRY="http://172.17.0.1:8081/repository/npm-hosted/"		   
-			# Correct base64 encoding (username:password)
-                    AUTH=$(echo -n "$NEXUS_USER:$NEXUS_PASS" | base64)
-		    # Create correct .npmrc
-                    echo "registry=$REGISTRY" > .npmrc
-                    echo "_auth=$AUTH" >> .npmrc
-                    echo "email=ci@example.com" >> .npmrc
-                    echo "always-auth=true" >> .npmrc
+        stage('Publish') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'nexus-creds',
+                    usernameVariable: 'NEXUS_USER',
+                    passwordVariable: 'NEXUS_PASS'
+                )]) {
+                    dir('week5/friday/app') {
+                        sh '''
+                            set -e
 
+                            REGISTRY="http://172.17.0.1:8081/repository/npm-hosted/"
 
-                    # Publish package
-                    npm publish
+                            AUTH=$(echo -n "$NEXUS_USER:$NEXUS_PASS" | base64)
 
-                    # Clean up
-                    rm -f .npmrc
-                '''
+                            echo "registry=$REGISTRY" > .npmrc
+                            echo "_auth=$AUTH" >> .npmrc
+                            echo "email=ci@example.com" >> .npmrc
+                            echo "always-auth=true" >> .npmrc
+
+                            npm publish
+
+                            rm -f .npmrc
+                        '''
+                    }
+                }
             }
         }
     }
-}
+
     post {
         always {
             cleanWs()
