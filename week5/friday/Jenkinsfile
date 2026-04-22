@@ -81,20 +81,19 @@ pipeline {
             }
         }
 
-        stage('Publish') {
-            steps {
-                withCredentials([string(credentialsId: 'nexus-token', variable: 'NEXUS_TOKEN')]) {
-                    sh '''
-                    echo "//${NEXUS_URL#http://}/repository/${NEXUS_REPO}/:_authToken=${NEXUS_TOKEN}" > .npmrc
-                    npm publish --registry=${NEXUS_URL}/repository/${NEXUS_REPO}/
+	stage('Publish') {
+        steps {
+          withCredentials([string(credentialsId: 'nexus-token', variable: 'NPM_TOKEN')]) {
+            dir('week5/friday/app') {
+                sh """
+                    echo "//${NEXUS_URL.replace('http://','')}/repository/${NEXUS_REPO}/:_authToken=${NPM_TOKEN}" > .npmrc
+                    npm publish --registry=${NEXUS_URL}/repository/${NEXUS_REPO}
                     rm -f .npmrc
-                    '''
-                }
+                """
             }
         }
-
     }
-
+}
     post {
         always {
             cleanWs()
