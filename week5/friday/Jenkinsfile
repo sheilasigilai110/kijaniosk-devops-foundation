@@ -19,37 +19,40 @@ pipeline {
 
         stage('Lint') {
             steps {
-	dir('week5/friday/app')
+	dir('week5/friday/app'){
                 sh 'npm install'
                 sh 'npm run lint'
+		}
             }
         }
-
+   }
         stage('Build') {
             steps {
-		dir('week5/friday/app')
+		dir('week5/friday/app'){
                 sh 'npm run build'
             }
         }
-
-        stage('Verify') {
-            parallel {
-
-                stage('Test') {
-                    steps {
-			dir('week5/friday/app')
-                        sh 'npm test'
-                    }
+   }
+	stage('Verify') {
+	 steps {
+          parallel(
+            Test: {
+                dir('week5/friday/app') {
+                    sh 'npm test'
                 }
+            }
+        }
+    }
+	           
 
-                stage('Security Audit') {
+     stage('Security Audit') {
                     steps {
-			dir('week5/friday/app')
+			dir('week5/friday/app'){
                         sh 'npm audit --audit-level=high'
                     }
                 }
             }
-        }
+        
 
         stage('Version') {
             steps {
