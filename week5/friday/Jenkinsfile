@@ -103,12 +103,16 @@ pipeline {
 
                            
 
-                            echo "registry=$REGISTRY" > .npmrc
-                            echo "_auth=$AUTH" >> .npmrc
-                            echo "email=ci@example.com" >> .npmrc
-                            echo "always-auth=true" >> .npmrc
+                            registry=$REGISTRY
+                            always-auth=true
+                            //172.17.0.1:8081/repository/npm-hosted/:username=$NEXUS_USER
+                            //172.17.0.1:8081/repository/npm-hosted/:_password=$(echo -n $NEXUS_PASS | base64)  
+                            /172.17.0.1:8081/repository/npm-hosted/:email=ci@example.com
+                            
+                            
 
-                            npm publish
+                            npm publish ----registry=$REGISTRY
+                          
 
                             rm -f .npmrc
                         '''
