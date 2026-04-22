@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'node:18.16.0-alpine'
-            args '--network jenkins-net'
+            args '--network jenkins-net -u root'
         }
     }
 
