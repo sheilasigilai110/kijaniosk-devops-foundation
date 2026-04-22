@@ -2,12 +2,8 @@ pipeline {
     agent {
         docker {
             image 'node:18.16.0-alpine'
-            args '-u root:root  -v /var/run/docker.sock:/var/run/docker.sock'
+            args '-u root:root -v /var/run/docker.sock:/var/run/docker.sock'
         }
-    }
-
-    tools {
-        dockerTool 'Docker'
     }
 
     environment {
@@ -38,13 +34,9 @@ pipeline {
 
         stage('Verify') {
             steps {
-                parallel(
-                    Test: {
-                        dir('week5/friday/app') {
-                            sh 'npm test'
-                        }
-                    }
-                )
+                dir('week5/friday/app') {
+                    sh 'npm test'
+                }
             }
         }
 
@@ -55,45 +47,52 @@ pipeline {
                 }
             }
         }
-	stage('Prepare') {
-	    steps {
+
+        stage('Prepare') {
+            steps {
                 sh '''
-		apk add --no-cache git
-		git config --global --add safe.directory $(pwd)
-		'''	
+                    apk add --no-cache git
+                    git config --global --add safe.directory $(pwd)
+                '''
+            }
         }
-    }
 
         stage('Version') {
             steps {
-                script {
-                    def gitSha = sh(script: "git rev-parse --short HEAD", returnStdout: true).trim()
-                    env.VERSION = "1.0.0-${gitSha}"
-                }
+                dir('week5/friday/app') {
+                    script {
+                        def gitSha = sh(script: "git rev-parse --short HEAD", returnStdout: true).trim()
+                        env.VERSION = "1.0.0-${gitSha}"
+                    }
 
-                sh 'npm version ${VERSION} --no-git-tag-version'
+                    sh "npm version ${VERSION} --no-git-tag-version"
+                }
             }
         }
 
         stage('Archive') {
             steps {
-                archiveArtifacts artifacts: '**/*', fingerprint: true
+                dir('week5/friday/app') {
+                    archiveArtifacts artifacts: '**/*', fingerprint: true
+                }
             }
         }
 
-	stage('Publish') {
-        steps {
-          withCredentials([string(credentialsId: 'nexus-token', variable: 'NPM_TOKEN')]) {
-            dir('week5/friday/app') {
-                sh """
-                    echo "//${NEXUS_URL.replace('http://','')}/repository/${NEXUS_REPO}/:_authToken=${NPM_TOKEN}" > .npmrc
-                    npm publish --registry=${NEXUS_URL}/repository/${NEXUS_REPO}
-                    rm -f .npmrc
-                """
+        stage('Publish') {
+            steps {
+                withCredentials([string(credentialsId: 'nexus-token', variable: 'NPM_TOKEN')]) {
+                    dir('week5/friday/app') {
+                        sh """
+                            echo "//${NEXUS_URL.replace('http://','')}/repository/${NEXUS_REPO}/:_authToken=${NPM_TOKEN}" > .npmrc
+                            npm publish --registry=${NEXUS_URL}/repository/${NEXUS_REPO}
+                            rm -f .npmrc
+                        """
+                    }
+                }
             }
         }
     }
-}
+
     post {
         always {
             cleanWs()
