@@ -100,9 +100,11 @@ pipeline {
                             set -e
 
                             REGISTRY="http://nexus3:8081/repository/npm-hosted/"
+			   
 
                             echo "registry=$REGISTRY" > .npmrc 
 			    echo "always-auth=true" >> .npmrc
+			    AUTH=$(echo -n "$NEXUS_USER:$NEXUS_PASS" | base64)
 			    echo "//nexus3:8081/repository/npm-hosted/:_authToken=$NEXUS_PASS" >> .npmrc
 
                             
