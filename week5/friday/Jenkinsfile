@@ -57,19 +57,23 @@ pipeline {
             }
         }
 
-        stage('Version') {
-            steps {
-                dir('week5/friday/app') {
-                    script {
+       stage('Version') {
+          steps {
+             dir('week5/friday/app') {
+               script {
+                   def gitSha = sh(
+                     script: "git rev-parse --short HEAD",
+                     returnStdout: true
+                ).trim()
 
-                       env.VERSION = "1.0.0-${BUILD_NUMBER}"
-                    }
+                env.VERSION = "1.0.0-${gitSha}"
+                echo "Version set to ${env.VERSION}"
+              }
 
-                    sh "npm version ${env.VERSION} --no-git-tag-version --allow-same-version"
-                }
-            }
+                  sh "npm version ${env.VERSION} --no-git-tag-version --allow-same-version"
+           }
         }
-
+    }
         stage('Archive') {
             steps {
                 dir('week5/friday/app') {
