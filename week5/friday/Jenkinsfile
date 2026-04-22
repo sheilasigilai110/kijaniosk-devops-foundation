@@ -99,17 +99,17 @@ pipeline {
                         sh '''
                             set -e
 
-                            REGISTRY="http://172.17.0.1:8081/repository/npm-hosted/"
+                            REGISTRY="http://nexus:8081/repository/npm-hosted/"
 
                             echo "registry=$REGISTRY" > .npmrc 
 			    echo "always-auth=true" >> .npmrc
-			    echo "//172.17.0.1:8081/repository/npm-hosted/:_authToken=$NEXUS_PASS" >> .npmrc
+			    echo "//nexus:8081/repository/npm-hosted/:_authToken=$NEXUS_PASS" >> .npmrc
 
                             
                             
                             
 
-                            npm publish ----registry=$REGISTRY
+                            npm publish --registry=$REGISTRY
                           
 
                             rm -f .npmrc
