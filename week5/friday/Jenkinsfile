@@ -55,6 +55,11 @@ pipeline {
                 }
             }
         }
+	stage('Prepare') {
+	    steps {
+              sh 'apk add --no-cache git'
+        }
+    }
 
         stage('Version') {
             steps {
