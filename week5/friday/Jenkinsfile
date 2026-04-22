@@ -57,7 +57,9 @@ pipeline {
         }
 	stage('Prepare') {
 	    steps {
-              sh 'apk add --no-cache git'
+              sh '''
+		git config --global --add safe.directory $(pwd)
+		'''	
         }
     }
 
