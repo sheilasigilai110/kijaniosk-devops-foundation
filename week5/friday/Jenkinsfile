@@ -10,7 +10,7 @@ pipeline {
         APP_NAME   = "kijanikiosk-payments"
         NEXUS_URL  = "http://172.17.0.1:8081"
         NEXUS_REPO = "npm-hosted"
-        VERSION    = ""
+        
     }
 
     stages {
@@ -56,29 +56,30 @@ pipeline {
                 '''
             }
         }
+stage('Version') {
+    steps {
+        script {
+            def gitSha = sh(
+                script: "git rev-parse --short HEAD",
+                returnStdout: true
+            ).trim()
 
-       stage('Version') {
-          steps {
-             dir('week5/friday/app') {
-               script {
-                   def gitSha = sh(
-                     script: "git rev-parse --short HEAD",
-                     returnStdout: true
-                ).trim()
-             
-                echo "DEBUG: gitSha = '${gitSha}"
+            echo "DEBUG: gitSha = '${gitSha}'"
 
-                if (!gitSha) {
-                    error "gitSha is empty - cannot continue"
-                }
-                env.VERSION = "1.0.0-${gitSha}"
-                echo "Version set to ${env.VERSION}"
-              }
+            if (!gitSha) {
+                error "gitSha is empty! Git command failed."
+            }
 
-                  sh "npm version ${env.VERSION} --no-git-tag-version --allow-same-version"
-           }
+            env.VERSION = "1.0.0-${gitSha}"
+            echo "Version set to ${env.VERSION}"
+        }
+
+        dir('week5/friday/app') {
+            sh "npm version ${env.VERSION} --no-git-tag-version --allow-same-version"
         }
     }
+}
+
         stage('Archive') {
             steps {
                 dir('week5/friday/app') {
