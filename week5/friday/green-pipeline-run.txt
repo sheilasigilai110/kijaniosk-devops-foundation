@@ -1,0 +1,234 @@
+Started by user sheila
+
+23:08:34 Connecting to https://api.github.com using sheilasigilai110/******
+Obtained week5/friday/Jenkinsfile from 5da052de2b9532a1aec129b0f3f980b27e792082
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on Jenkins
+ in /var/jenkins_home/workspace/peline_feature_week5-ci-pipeline
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Declarative: Checkout SCM)
+[Pipeline] checkout
+The recommended git tool is: NONE
+using credential 0ca0b9ed-cb8c-4887-b2e6-01524074a740
+Cloning the remote Git repository
+Cloning with configured refspecs honoured and without tags
+Cloning repository https://github.com/sheilasigilai110/kijaniosk-devops-foundation.git
+ > git init /var/jenkins_home/workspace/peline_feature_week5-ci-pipeline # timeout=10
+Fetching upstream changes from https://github.com/sheilasigilai110/kijaniosk-devops-foundation.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.47.3'
+using GIT_ASKPASS to set credentials 
+ > git fetch --no-tags --force --progress -- https://github.com/sheilasigilai110/kijaniosk-devops-foundation.git +refs/heads/feature/week5-ci-pipeline:refs/remotes/origin/feature/week5-ci-pipeline # timeout=10
+ > git config remote.origin.url https://github.com/sheilasigilai110/kijaniosk-devops-foundation.git # timeout=10
+ > git config --add remote.origin.fetch +refs/heads/feature/week5-ci-pipeline:refs/remotes/origin/feature/week5-ci-pipeline # timeout=10
+Avoid second fetch
+Checking out Revision 5da052de2b9532a1aec129b0f3f980b27e792082 (feature/week5-ci-pipeline)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 5da052de2b9532a1aec129b0f3f980b27e792082 # timeout=10
+Commit message: "Restore Build stage"
+ > git rev-list --no-walk 3979aea6df814566eed574343438091301895233 # timeout=10
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] isUnix
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] sh
++ docker inspect -f . node:18.16.0-alpine
+.
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] withDockerContainer
+Jenkins seems to be running inside container c3dfcc230e6b1e3c6a8dfc1bea751a79b6665b940a7b100218b868e25bba46f1
+$ docker run -t -d -u 1000:1000 --network jenkins-net -u root -w /var/jenkins_home/workspace/peline_feature_week5-ci-pipeline --volumes-from c3dfcc230e6b1e3c6a8dfc1bea751a79b6665b940a7b100218b868e25bba46f1 -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** node:18.16.0-alpine cat
+$ docker top 32803b91479ec9d21cc9b6253e875c73dc83051c9afda480e287f123866479ab -eo pid,comm
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Lint)
+[Pipeline] dir
+Running in /var/jenkins_home/workspace/peline_feature_week5-ci-pipeline/week5/friday/app
+[Pipeline] {
+[Pipeline] sh
++ npm run lint
+
+> app@1.0.0 lint
+> echo linting...
+
+linting...
+[Pipeline] }
+[Pipeline] // dir
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Build)
+[Pipeline] dir
+Running in /var/jenkins_home/workspace/peline_feature_week5-ci-pipeline/week5/friday/app
+[Pipeline] {
+[Pipeline] sh
++ npm run build
+
+> app@1.0.0 build
+> mkdir -p dist && echo 'build output' > dist/app.txt
+
+[Pipeline] }
+[Pipeline] // dir
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Verify)
+[Pipeline] dir
+Running in /var/jenkins_home/workspace/peline_feature_week5-ci-pipeline/week5/friday/app
+[Pipeline] {
+[Pipeline] sh
++ npm test
+
+> app@1.0.0 test
+> echo tests passed
+
+tests passed
+[Pipeline] }
+[Pipeline] // dir
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Security Audit)
+[Pipeline] dir
+Running in /var/jenkins_home/workspace/peline_feature_week5-ci-pipeline/week5/friday/app
+[Pipeline] {
+[Pipeline] sh
++ npm audit '--audit-level=high'
+found 0 vulnerabilities
+[Pipeline] }
+[Pipeline] // dir
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Prepare)
+[Pipeline] sh
++ apk add --no-cache git
+fetch https://dl-cdn.alpinelinux.org/alpine/v3.18/main/x86_64/APKINDEX.tar.gz
+fetch https://dl-cdn.alpinelinux.org/alpine/v3.18/community/x86_64/APKINDEX.tar.gz
+(1/10) Installing ca-certificates (20241121-r1)
+(2/10) Installing brotli-libs (1.0.9-r14)
+(3/10) Installing libunistring (1.1-r1)
+(4/10) Installing libidn2 (2.3.4-r1)
+(5/10) Installing nghttp2-libs (1.57.0-r0)
+(6/10) Installing libpsl (0.21.5-r0)
+(7/10) Installing libcurl (8.12.1-r0)
+(8/10) Installing libexpat (2.7.0-r0)
+(9/10) Installing pcre2 (10.42-r1)
+(10/10) Installing git (2.40.4-r0)
+Executing busybox-1.36.1-r0.trigger
+Executing ca-certificates-20241121-r1.trigger
+OK: 21 MiB in 27 packages
++ git config --global --add safe.directory /var/jenkins_home/workspace/peline_feature_week5-ci-pipeline
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Version)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] sh
++ git rev-parse --short HEAD
+[Pipeline] echo
+DEBUG: gitSha = '5da052d'
+[Pipeline] echo
+Version set to 1.0.0-5da052d
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] dir
+Running in /var/jenkins_home/workspace/peline_feature_week5-ci-pipeline/week5/friday/app
+[Pipeline] {
+[Pipeline] sh
++ npm version 1.0.0-5da052d --no-git-tag-version --allow-same-version
+v1.0.0-5da052d
+[Pipeline] }
+[Pipeline] // dir
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Archive)
+[Pipeline] dir
+Running in /var/jenkins_home/workspace/peline_feature_week5-ci-pipeline/week5/friday/app
+[Pipeline] {
+[Pipeline] archiveArtifacts
+Archiving artifacts
+Recording fingerprints
+[Pipeline] }
+[Pipeline] // dir
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Publish)
+[Pipeline] withCredentials
+Masking supported pattern matches of $NEXUS_PASS
+[Pipeline] {
+[Pipeline] dir
+Running in /var/jenkins_home/workspace/peline_feature_week5-ci-pipeline/week5/friday/app
+[Pipeline] {
+[Pipeline] sh
++ set -e
++ REGISTRY=http://nexus3:8081/repository/npm-hosted/
++ echo 'registry=http://nexus3:8081/repository/npm-hosted/'
++ echo 'always-auth=true'
++ echo -n admin:****
++ base64
++ AUTH=YWRtaW46****
++ echo '//nexus3:8081/repository/npm-hosted/:_auth=YWRtaW46****'
++ npm publish '--registry=http://nexus3:8081/repository/npm-hosted/'
+npm notice 
+npm notice package: app@1.0.0-5da052d
+npm notice === Tarball Contents === 
+npm notice 13B  dist/app.txt
+npm notice 350B package.json
+npm notice === Tarball Details === 
+npm notice name:          app                                     
+npm notice version:       1.0.0-5da052d                           
+npm notice filename:      app-1.0.0-5da052d.tgz                   
+npm notice package size:  339 B                                   
+npm notice unpacked size: 363 B                                   
+npm notice shasum:        b59f2962712da7fcc22f251a6fa4157f0580d248
+npm notice integrity:     sha512-BaUyKkdKQtMFT[...]tc8EYu9/LdkRw==
+npm notice total files:   2                                       
+npm notice 
+npm notice Publishing to http://nexus3:8081/repository/npm-hosted/ with tag latest and default access
++ app@1.0.0-5da052d
++ rm -f .npmrc
+[Pipeline] }
+[Pipeline] // dir
+[Pipeline] }
+[Pipeline] // withCredentials
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Declarative: Post Actions)
+[Pipeline] cleanWs
+[WS-CLEANUP] Deleting project workspace...
+[WS-CLEANUP] Deferred wipeout is used...
+[WS-CLEANUP] done
+[Pipeline] echo
+NOTICE: Build status changed.
+[Pipeline] echo
+SUCCESS: Artifact published to Nexus at http://172.17.0.1:8081
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+$ docker stop --time=1 32803b91479ec9d21cc9b6253e875c73dc83051c9afda480e287f123866479ab
+$ docker rm -f --volumes 32803b91479ec9d21cc9b6253e875c73dc83051c9afda480e287f123866479ab
+[Pipeline] // withDockerContainer
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+
+GitHub has been notified of this commit’s build result
+
+Finished: SUCCESS
