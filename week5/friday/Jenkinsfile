@@ -69,7 +69,7 @@ pipeline {
                         env.VERSION = "1.0.0-${gitSha}"
                     }
 
-                    sh "npm version $env.{VERSION} --no-git-tag-version"
+                    sh "npm version ${env.VERSION} --no-git-tag-version"
                 }
             }
         }
