@@ -51,7 +51,7 @@ pipeline {
             steps {
                 sh '''
                     apk add --no-cache git
-                    git config --global --add safe.directory /var/jenkins_home/workspace/*
+                    git config --global --add safe.directory /var/jenkins_home/workspace/peline_feature_week5-ci-pipeline
                 '''
             }
         }
