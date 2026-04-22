@@ -99,11 +99,11 @@ pipeline {
                         sh '''
                             set -e
 
-                            REGISTRY="http://nexus:8081/repository/npm-hosted/"
+                            REGISTRY="http://host.docker.internal:8081/repository/npm-hosted/"
 
                             echo "registry=$REGISTRY" > .npmrc 
 			    echo "always-auth=true" >> .npmrc
-			    echo "//nexus:8081/repository/npm-hosted/:_authToken=$NEXUS_PASS" >> .npmrc
+			    echo "//host.docker.internal:8081/repository/npm-hosted/:_authToken=$NEXUS_PASS" >> .npmrc
 
                             
                             
