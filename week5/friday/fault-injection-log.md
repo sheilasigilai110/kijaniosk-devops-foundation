@@ -291,3 +291,173 @@ Finished: FAILURE
 #Build stage failed intentionally using exit 1
 #All downstream stages were skipped automatically
 
+Started by user sheila
+
+23:40:09 Connecting to https://api.github.com using sheilasigilai110/******
+Obtained week5/friday/Jenkinsfile from de676f88510d791c27e3b57df98c031b7e45f58d
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on Jenkins
+ in /var/jenkins_home/workspace/peline_feature_week5-ci-pipeline
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Declarative: Checkout SCM)
+[Pipeline] checkout
+The recommended git tool is: NONE
+using credential 0ca0b9ed-cb8c-4887-b2e6-01524074a740
+Cloning the remote Git repository
+Cloning with configured refspecs honoured and without tags
+Cloning repository https://github.com/sheilasigilai110/kijaniosk-devops-foundation.git
+ > git init /var/jenkins_home/workspace/peline_feature_week5-ci-pipeline # timeout=10
+Fetching upstream changes from https://github.com/sheilasigilai110/kijaniosk-devops-foundation.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.47.3'
+using GIT_ASKPASS to set credentials 
+ > git fetch --no-tags --force --progress -- https://github.com/sheilasigilai110/kijaniosk-devops-foundation.git +refs/heads/feature/week5-ci-pipeline:refs/remotes/origin/feature/week5-ci-pipeline # timeout=10
+ > git config remote.origin.url https://github.com/sheilasigilai110/kijaniosk-devops-foundation.git # timeout=10
+ > git config --add remote.origin.fetch +refs/heads/feature/week5-ci-pipeline:refs/remotes/origin/feature/week5-ci-pipeline # timeout=10
+Avoid second fetch
+Checking out Revision de676f88510d791c27e3b57df98c031b7e45f58d (feature/week5-ci-pipeline)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f de676f88510d791c27e3b57df98c031b7e45f58d # timeout=10
+Commit message: "[Fault injection-Failure Security Audit]"
+ > git rev-list --no-walk ffb254d874083d0159ce232f38500ea1f8f9483b # timeout=10
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] isUnix
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] sh
++ docker inspect -f . node:18.16.0-alpine
+.
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] withDockerContainer
+Jenkins seems to be running inside container c3dfcc230e6b1e3c6a8dfc1bea751a79b6665b940a7b100218b868e25bba46f1
+$ docker run -t -d -u 1000:1000 --network jenkins-net -u root -w /var/jenkins_home/workspace/peline_feature_week5-ci-pipeline --volumes-from c3dfcc230e6b1e3c6a8dfc1bea751a79b6665b940a7b100218b868e25bba46f1 -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** node:18.16.0-alpine cat
+$ docker top 0a8b68ae0ace98b65dfd69d9184240df9206783eea7af719439f228a9b12a59e -eo pid,comm
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Lint)
+[Pipeline] dir
+Running in /var/jenkins_home/workspace/peline_feature_week5-ci-pipeline/week5/friday/app
+[Pipeline] {
+[Pipeline] sh
++ npm run lint
+
+> app@1.0.0 lint
+> echo linting...
+
+linting...
+[Pipeline] }
+[Pipeline] // dir
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Build)
+[Pipeline] dir
+Running in /var/jenkins_home/workspace/peline_feature_week5-ci-pipeline/week5/friday/app
+[Pipeline] {
+[Pipeline] sh
++ npm run build
+
+> app@1.0.0 build
+> mkdir -p dist && echo 'build output' > dist/app.txt
+
+[Pipeline] }
+[Pipeline] // dir
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Verify)
+[Pipeline] dir
+Running in /var/jenkins_home/workspace/peline_feature_week5-ci-pipeline/week5/friday/app
+[Pipeline] {
+[Pipeline] sh
++ npm test
+
+> app@1.0.0 test
+> echo tests passed
+
+tests passed
+[Pipeline] }
+[Pipeline] // dir
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Security Audit)
+[Pipeline] dir
+Running in /var/jenkins_home/workspace/peline_feature_week5-ci-pipeline/week5/friday/app
+[Pipeline] {
+[Pipeline] sh
++ npm audit '--audit-level=high'
+npm ERR! code ENOLOCK
+npm ERR! audit This command requires an existing lockfile.
+npm ERR! audit Try creating one first with: npm i --package-lock-only
+npm ERR! audit Original error: loadVirtual requires existing shrinkwrap file
+
+npm ERR! A complete log of this run can be found in:
+npm ERR!     /root/.npm/_logs/2026-04-22T23_40_17_914Z-debug-0.log
+[Pipeline] }
+[Pipeline] // dir
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Prepare)
+Stage "Prepare" skipped due to earlier failure(s)
+[Pipeline] getContext
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Version)
+Stage "Version" skipped due to earlier failure(s)
+[Pipeline] getContext
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Archive)
+Stage "Archive" skipped due to earlier failure(s)
+[Pipeline] getContext
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Publish)
+Stage "Publish" skipped due to earlier failure(s)
+[Pipeline] getContext
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Declarative: Post Actions)
+[Pipeline] cleanWs
+[WS-CLEANUP] Deleting project workspace...
+[WS-CLEANUP] Deferred wipeout is used...
+[WS-CLEANUP] done
+[Pipeline] echo
+NOTICE: Build status changed.
+[Pipeline] echo
+FAILURE: Pipeline failed. Investigate logs.
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+$ docker stop --time=1 0a8b68ae0ace98b65dfd69d9184240df9206783eea7af719439f228a9b12a59e
+$ docker rm -f --volumes 0a8b68ae0ace98b65dfd69d9184240df9206783eea7af719439f228a9b12a59e
+[Pipeline] // withDockerContainer
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+ERROR: script returned exit code 1
+
+GitHub has been notified of this commit’s build result
+
+Finished: FAILURE
+#Observation
+Pipeline stops at Security Audit;Prepare,versionArchive .Plublish are skipped.This shows that security checks must block release if dependencies cannot be verified
+
