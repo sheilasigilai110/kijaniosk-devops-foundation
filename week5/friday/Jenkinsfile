@@ -21,8 +21,7 @@ pipeline {
             steps {
 	dir('week5/friday/app'){
                 sh 'npm install'
-                sh 'npm run lint'
-		}
+                sh 'npm run lint'}	
             }
         }
    }
