@@ -1,0 +1,39 @@
+# Stage 1: Builder
+FROM node:18-alpine AS builder
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+RUN npm ci
+
+# Copy source and build
+COPY . .
+RUN npm run build
+
+# Stage 2: Production
+FROM node:18-alpine
+
+# Create non-root user
+RUN addgroup -g 1001 -S kijani && \
+    adduser -u 1001 -S kijani -G kijani
+
+# Install wget for healthcheck
+RUN apk add --no-cache wget
+
+WORKDIR /app
+
+# Copy from builder
+COPY --from=builder --chown=kijani:kijani /app/dist ./dist
+COPY --from=builder --chown=kijani:kijani /app/node_modules ./node_modules
+COPY --chown=kijani:kijani package*.json ./
+
+# Switch to non-root user
+USER kijani
+
+EXPOSE 3001
+
+HEALTHCHECK --interval=30s --timeout=3s --start-period=45s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:3001/health || exit 1
+
+CMD ["node", "dist/index.js"]

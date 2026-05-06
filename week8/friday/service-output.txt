@@ -1,0 +1,47 @@
+=== SERVICE VERIFICATION ===
+Date: May 5, 2026
+
+=== COMMAND ===
+kubectl apply -f kk-payments-service.yaml
+
+=== SERVICE STATUS ===
+kubectl get svc kk-payments-service
+NAME                   TYPE       CLUSTER-IP     PORT(S)          AGE
+kk-payments-service   NodePort   10.110.111.80   3001:30001/TCP   21m
+
+✅ NodePort service created
+
+=== ENDPOINTS ===
+kubectl get endpoints kk-payments-service
+NAME                   ENDPOINTS                         AGE
+kk-payments-service   10.244.0.4:3001,10.244.0.6:3001   21m
+
+✅ Both pod IPs showing (not <none>)
+
+=== EXTERNAL ACCESS ===
+MINIKUBE_IP=$(minikube ip)
+curl http://192.168.49.2:30001/health
+{"status":"healthy","version":"1.2.0","timestamp":"2026-05-05T13:51:42.132Z"}
+
+✅ Health endpoint works with correct version
+
+=== IN-CLUSTER DNS ===
+Command: kubectl run test-pod --rm -it --image=curlimages/curl --restart=Never -- \
+  curl -s http://kk-payments-service.default.svc.cluster.local:3001/health
+
+{"status":"healthy","version":"1.2.0"}
+
+✅ DNS resolution works inside cluster
+
+=== LOAD BALANCING ===
+Service distributes traffic to both pods:
+- Pod 1: 10.244.0.4
+- Pod 2: 10.244.0.6
+✅ Both receive traffic
+
+=== SUMMARY ===
+✅ NodePort service accessible externally
+✅ Both pod endpoints registered
+✅ Health endpoint returns correct version
+✅ In-cluster DNS working
+✅ Load balancing across 2 replicas

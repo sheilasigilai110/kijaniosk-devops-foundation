@@ -1,0 +1,51 @@
+=== DEPLOYMENT VERIFICATION ===
+Date: May 5, 2026
+
+=== COMMAND ===
+kubectl apply -f kk-payments-deployment.yaml
+
+=== DEPLOYMENT STATUS ===
+kubectl get deployment kk-payments
+NAME          READY   UP-TO-DATE   AVAILABLE   AGE
+kk-payments   2/2     2            2           21m
+
+✅ READY 2/2, AVAILABLE 2
+
+=== POD STATUS ===
+kubectl get pods -l app=kk-payments
+NAME                          READY   STATUS    RESTARTS   AGE
+kk-payments-7dff4b449-bzn9t   1/1     Running   0          2m30s
+kk-payments-7dff4b449-xs5dw   1/1     Running   0          21m
+
+✅ Both pods Running
+
+=== REPLICAS ===
+Desired: 2
+Actual: 2
+✅ PASS
+
+=== RESOURCE LIMITS ===
+kubectl describe pod | grep -A5 Limits
+    Limits:
+      cpu:     200m
+      memory:  256Mi
+    Requests:
+      cpu:     100m
+      memory:  128Mi
+
+✅ Both limits and requests present
+
+=== IMAGE VERIFICATION ===
+Image: sheilasigilai110/kk-payments:1.2.0-c0fb37b
+✅ PASS - matches registry tag
+
+=== ROLLOUT STATUS ===
+kubectl rollout status deployment kk-payments
+deployment "kk-payments" successfully rolled out
+✅ PASS
+
+=== SUMMARY ===
+✅ 2 replicas running
+✅ Resource limits configured
+✅ Correct image from registry
+✅ All pods healthy
